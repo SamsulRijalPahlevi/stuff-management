@@ -1,0 +1,50 @@
+{
+  "stuff": [
+    {
+      "id": "52d3",
+      "name": "jaguar",
+      "price": "100",
+      "category": "Electronic"
+    },
+    {
+      "id": "8bc4",
+      "name": "tok",
+      "price": "1000",
+      "category": "Furniture"
+    },
+    {
+      "id": "e737",
+      "name": "bangk",
+      "price": "100",
+      "category": "Electronic"
+    },
+    {
+      "id": "0ed7",
+      "name": "Samsul",
+      "price": "100",
+      "category": "Human"
+    }
+  ],
+  "category": [
+    {
+      "id": "b1f8",
+      "name": "Furniture"
+    },
+    {
+      "id": "d064",
+      "name": "Electronik"
+    },
+    {
+      "id": "bf8a",
+      "name": "Food & Drink"
+    },
+    {
+      "id": "e8d1",
+      "name": "Dress"
+    },
+    {
+      "id": "4157",
+      "name": "Human"
+    }
+  ]
+}

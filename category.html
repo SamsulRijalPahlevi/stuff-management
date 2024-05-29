@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Category Management</title>
+  <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"> -->
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .container {
+      margin-top: 50px;
+    }
+    h2 {
+      margin-bottom: 30px;
+    }
+    table {
+      margin-top: 20px;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">My App</a>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="index.html">Home</a>
+        </li>
+        <li class="nav-item active">
+          <a class="nav-link" href="category.html">Categories</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  
+  <div class="container">
+    <h2>Manage Categories</h2>
+    <div class="form-group">
+      <input type="text" placeholder="Name of category" id="categoryName" class="form-control" />
+      <button type="button" onclick="SaveCategory()" id="save" class="btn btn-primary mt-2">Save</button>
+    </div>
+
+    <table class="table table-striped table-bordered">
+      <thead class="thead-dark">
+        <tr>
+          <th>No.</th>
+          <th>Name</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="result"></tbody>
+    </table>
+  </div>
+
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script>
+    const GetCategories = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/category');
+        const categories = response.data;
+        let bucket = '';
+        categories.forEach((category, index) => {
+          bucket += `
+            <tr>
+              <td>${index + 1}</td>
+              <td>${category.name}</td>
+              <td>
+                <button type="button" class="btn btn-warning btn-sm" onclick="EditCategory('${category.id}')">Edit</button>
+                <button type="button" class="btn btn-danger btn-sm" onclick="DeleteCategory('${category.id}')">Delete</button>
+              </td>
+            </tr>
+          `;
+        });
+        document.getElementById('result').innerHTML = bucket;
+      } catch (error) {
+        console.error('Error loading categories:', error.message);
+        alert('Error loading categories: ' + error.message);
+      }
+    };
+    GetCategories();
+
+    const SaveCategory = async () => {
+      try {
+        const name = document.getElementById('categoryName').value;
+        await axios.post('http://localhost:3000/category', { name });
+        GetCategories();
+      } catch (error) {
+        console.error('Error saving category:', error.message);
+        alert('Error saving category: ' + error.message);
+      }
+    };
+
+    const DeleteCategory = async (id) => {
+      if (confirm('Are you sure you want to delete this category?')) {
+        try {
+          await axios.delete(`http://localhost:3000/category/${id}`);
+          GetCategories();
+        } catch (error) {
+          console.error('Error deleting category:', error.message);
+          alert('Error deleting category: ' + error.message);
+        }
+      }
+    };
+
+    const EditCategory = async (id) => {
+      try {
+        const response = await axios.get(`http://localhost:3000/category/${id}`);
+        const category = response.data;
+        document.getElementById('categoryName').value = category.name;
+        document.getElementById('save').innerText = 'Update';
+        document.getElementById('save').setAttribute('onclick', UpdateCategory('${id}'));
+      } catch (error) {
+        console.error('Error editing category:', error.message);
+        alert('Error editing category: ' + error.message);
+      }
+    };
+
+    const UpdateCategory = async (id) => {
+      try {
+        const name = document.getElementById('categoryName').value;
+        await axios.patch(`http://localhost:3000/category/${id}`, { name });
+        document.getElementById('categoryName').value = '';
+        document.getElementById('save').innerText = 'Save';
+        document.getElementById('save').setAttribute('onclick', 'SaveCategory()');
+        GetCategories();
+      } catch (error) {
+        console.error('Error updating category:', error.message);
+        alert('Error updating category: ' + error.message);
+      }
+    };
+  </script>
+</body>
+</html>
